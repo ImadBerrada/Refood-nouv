@@ -1,0 +1,75 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Restaurant {
+  adresse        String?
+  coordonnEsGps  String?
+  createdAt      DateTime        @default(now())
+  id             String          @id @default(cuid())
+  nom            String?
+  panierMysteres PanierMystere[]
+  updatedAt      DateTime        @updatedAt
+}
+
+model Utilisateur {
+  adresse      String?
+  createdAt    DateTime  @default(now())
+  email        String?
+  favorises    Favoris[]
+  id           String    @id @default(cuid())
+  localisation String?
+  motDePasse   String?
+  nom          String?
+  prNom        String?
+  tLPhone      String?
+  updatedAt    DateTime  @updatedAt
+}
+
+model Favoris {
+  createdAt       DateTime       @default(now())
+  id              String         @id @default(cuid())
+  panierMystere   PanierMystere? @relation(fields: [panierMystereId], references: [id])
+  panierMystereId String?
+  updatedAt       DateTime       @updatedAt
+  utilisateur     Utilisateur?   @relation(fields: [utilisateurId], references: [id])
+  utilisateurId   String?
+}
+
+model PanierMystere {
+  createdAt    DateTime    @default(now())
+  description  String?
+  favorises    Favoris[]
+  id           String      @id @default(cuid())
+  nom          String?
+  prix         Float?
+  restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
+  restaurantId String?
+  updatedAt    DateTime    @updatedAt
+}
+
+model Paiement {
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  montant   Float?
+  mThode    String?
+  statut    String?
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
